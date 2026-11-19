@@ -177,23 +177,18 @@
   .row{position:relative;overflow:hidden;opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out),padding .45s var(--ease)}
   .list li.seen .row{opacity:1;transform:none}
   /* the sweep: a block of colour that slides through the row */
-  .row::before{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:right;transition:transform .55s var(--ease)}
-  .row:hover,.row:focus-visible{color:#fff;padding-left:20px;padding-right:12px}
+  .row::before{content:"";position:absolute;inset:0;background:#eceff7;transform:scaleX(0);transform-origin:right;transition:transform .55s var(--ease)}
+  .row:hover,.row:focus-visible{color:var(--navy);padding-left:20px;padding-right:12px}
   .row:hover::before,.row:focus-visible::before{transform:scaleX(1);transform-origin:left}
-  .row:hover .q,.row:focus-visible .q,.row:hover .num,.row:focus-visible .num{color:rgba(255,255,255,.72)}
+  .row:hover .q,.row:focus-visible .q,.row:hover .num,.row:focus-visible .num{color:#5d6888}
   .row:hover .arrow{transform:translateX(0)}
   .row:focus-visible{outline:none}
-  /* passing by on scroll: navy sweeps through the part crossing the middle of the screen */
-  .list li.focus .row{color:#fff;padding-left:20px;padding-right:12px}
-  .list li.focus .row::before{background:var(--navy);transform:scaleX(1);transform-origin:left}
-  .list li.focus .row .q,.list li.focus .row .num{color:rgba(255,255,255,.72)}
-  .row:hover::before{background:var(--ink)}
 
   /* page change wipe */
   .wipe{position:fixed;inset:0;z-index:50;pointer-events:none;display:grid}
   .wipe i{grid-area:1/1;transform:scaleY(0);transform-origin:bottom}
-  .wipe i:first-child{background:var(--ink)}
-  .wipe i:last-child{background:var(--navy)}
+  .wipe i:first-child{background:#f3f5fa}
+  .wipe i:last-child{background:#e6eaf4}
   .wipe.in i{animation:wipeIn .5s var(--ease) forwards}
   .wipe.in i:last-child{animation-delay:.07s}
   .wipe.out i{transform:scaleY(1);transform-origin:top;animation:wipeOut .55s var(--ease) forwards}
@@ -343,7 +338,7 @@ function watchRows(){
   }), {threshold: .15});
   focusObs = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle("focus", e.isIntersecting)),
     {rootMargin: "-49% 0px -50% 0px"});
-  items.forEach(li => { seenObs.observe(li); focusObs.observe(li); });
+  items.forEach(li => { seenObs.observe(li); });
 }
 
 // ── 메모 한 장 ──
