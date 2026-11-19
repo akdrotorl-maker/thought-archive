@@ -178,7 +178,7 @@ persist();
 let others = [];   // [{id,name,topic,text}]
 let topic = null, saving = false;
 
-function render(){ topic ? renderTopic(topic) : renderGrid(); }
+function render(){ document.querySelector("header").hidden = !!topic; topic ? renderTopic(topic) : renderGrid(); }
 
 function renderGrid(){
   view.innerHTML = `<div class="sec-label"><span>Topics</span><span>08</span></div>
@@ -217,7 +217,7 @@ function renderTopic(k){
   ta.oninput = () => { store.answers[k] = ta.value; persist(); };
   $("#name").oninput = e => { store.name = e.target.value; persist(); };
   $("#consent").onchange = e => { store.consent = e.target.checked; persist(); };
-  $("#back").onclick = () => { topic = null; render(); };
+  $("#back").onclick = () => { topic = null; render(); scrollTo(0,0); };
   if ($("#next")) $("#next").onclick = () => { topic = TOPICS[i+1].k; render(); scrollTo(0,0); };
   $("#save").onclick = () => save(k);
   renderOthers(k);
