@@ -104,6 +104,8 @@
     background:rgba(255,255,255,.55);box-shadow:0 1px 2px rgba(0,0,0,.06);backdrop-filter:blur(1px)}
   .note .txt{white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere}
   .note .who{font-family:var(--font);font-size:12px;margin-top:14px;opacity:.6}
+  .note .txt a{color:var(--navy);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;word-break:break-all}
+  .note .txt a::before{content:"↗ ";text-decoration:none;display:inline-block;margin-right:2px}
   .note .tag{font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.02em;opacity:.55;margin-bottom:8px}
 
   /* composer: memo + tools */
@@ -258,8 +260,8 @@ const TOPICS = [
    h:"디자인에 대한 생각, 일에 대한 생각, 좋아하는 것을 일로 삼는 것에 대한 생각, 무엇이든 괜찮습니다. 디자인과 상관없는 일을 하고 있다면 그 일에 대해 적어주셔도 됩니다."},
   {k:"t2", t:"인간관계", q:"사람과의 관계에서 요즘 가장 많이 생각하는 것은 무엇인가요?",
    h:"사람에 대한 생각, 관계에 대한 생각, 요즘 자주 떠오르는 누군가에 대한 이야기, 무엇이든 괜찮습니다. 별다른 생각이 없다면 없다고 적어주셔도 됩니다."},
-  {k:"t3", t:"음악, 또는 삶의 영감", q:"요즘 당신에게 영감을 주는 건 무엇인가요? 노래, 장면, 문장, 사람, 무엇이든 좋아요.",
-   h:"음악이 아니어도 됩니다. 자꾸 다시 찾게 되는 것, 좋아하는 것, ‘영감’이라는 말 자체에 대한 생각도 괜찮습니다. 딱히 없다면 없다고 적어주셔도 됩니다."},
+  {k:"t3", t:"삶의 영감", q:"삶에 대한 영감을 얻을 때는 언제인가요? 혹은 당신을 살게 하는 것들은 무엇인가요?",
+   h:"노래, 장면, 문장, 사람, 장소, 무엇이든 괜찮습니다. 같이 나누고 싶은 음악이나 영상, 글이 있다면 링크도 함께 붙여주세요."},
   {k:"t4", t:"좋은 사람", q:"당신이 생각하는 좋은 사람은 어떤 사람인가요?",
    h:"되고 싶은 사람, 곁에 두고 싶은 사람, ‘좋은 사람’이라는 말에 대한 생각, 무엇이든 괜찮습니다."},
   {k:"t5", t:"가족", q:"가족을 떠올리면 어떤 생각이 드나요?",
@@ -342,6 +344,14 @@ function watchRows(){
 }
 
 // ── 메모 한 장 ──
+// 글 안의 링크(https://…)는 눌러서 열 수 있게
+function linkify(html){
+  return html.replace(/https?:\/\/(?:(?!&quot;|&#39;)[^\s<])+/g, u => {
+    const m = u.match(/^(.*?)([.,!?)\]]*)$/), url = m[1], tail = m[2];
+    const label = url.replace(/^https?:\/\//, "").replace(/&amp;/g, "&");
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${esc(label.length > 38 ? label.slice(0, 36) + "…" : label)}</a>${tail}`;
+  });
+}
 function hash(s){ let x = 0; for (const c of String(s)) x = (x * 31 + c.charCodeAt(0)) | 0; return Math.abs(x); }
 function noteHTML(o, i, withTopic){
   const hv = hash(o.id), mine = mineIds().includes(o.id);
@@ -351,7 +361,7 @@ function noteHTML(o, i, withTopic){
     style="--rot:${rot}deg;--trot:${trot}deg;--tleft:${tleft}%;animation-delay:${Math.min(i, 12) * 45}ms">
     <span class="tape" aria-hidden="true"></span>
     ${withTopic ? `<div class="tag">${esc(TOPIC_NAME[o.topic] || "")}</div>` : ""}
-    <div class="txt">${esc(String(o.body).trim())}</div>
+    <div class="txt">${linkify(esc(String(o.body).trim()))}</div>
     <div class="who">— ${esc(who)}</div>
   </article>`;
 }
