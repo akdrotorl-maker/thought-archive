@@ -3,6 +3,270 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>생각 아카이빙 — Thought Archive</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --ink:#0a0a0a; --sub:#6e6e73; --line:#0a0a0a; --hair:#d9d9de; --bg:#ffffff;
+    --navy:#0b1f4d; --navy-soft:#f2f4f9;
+    --font:"Helvetica Neue",Helvetica,"Pretendard Variable",Pretendard,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;word-break:keep-all}
+  button{font:inherit;color:inherit;cursor:pointer}
+  ::selection{background:var(--navy);color:#fff}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 32px 96px}
+  @media (max-width:640px){.wrap{padding:20px 20px 80px}}
+
+  /* top bar */
+  .bar{display:flex;justify-content:space-between;gap:16px;font-size:12px;font-weight:600;letter-spacing:.02em;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .bar span:last-child{color:var(--sub);font-weight:500}
+
+  /* header */
+  header h1{font-size:clamp(48px,9vw,112px);line-height:.98;font-weight:700;letter-spacing:-.045em;margin:56px 0 64px}
+  header h1 em{font-style:normal;color:var(--navy)}
+  .cols{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;border-top:1px solid var(--line);padding-top:18px}
+  .cols .label{grid-column:span 3;font-size:12px;font-weight:600;letter-spacing:.02em}
+  .cols .body{grid-column:span 9;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .intro{font-size:17px;line-height:1.65;font-weight:500;letter-spacing:-.01em;margin:0}
+  .free{grid-column:span 2;font-size:15px;line-height:1.75;margin:8px 0 0;padding:18px 0 0;border-top:1px solid var(--hair);color:#2a2a2e}
+  .free b{color:var(--navy);font-weight:700}
+  .note{grid-column:span 2;font-size:12px;color:var(--sub);line-height:1.6;margin:0}
+  @media (max-width:760px){
+    .cols{grid-template-columns:1fr;gap:12px}
+    .cols .label,.cols .body{grid-column:auto}
+    .cols .body{grid-template-columns:1fr;gap:16px}
+    .free,.note{grid-column:auto}
+  }
+
+  /* topic list */
+  .sec-label{display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.02em;padding-bottom:14px;border-bottom:1px solid var(--line);margin-top:96px}
+  .list{list-style:none;margin:0;padding:0}
+  .list li{border-bottom:1px solid var(--hair)}
+  .row{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:grid;grid-template-columns:80px minmax(160px,1.1fr) 2fr 32px;gap:24px;align-items:baseline;padding:26px 0;transition:color .15s,padding .2s}
+  .row .num{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--sub)}
+  .row .ttl{font-size:clamp(22px,2.6vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.15}
+  .row .q{font-size:14px;line-height:1.6;color:var(--sub)}
+  .row .arrow{font-size:20px;justify-self:end;transition:transform .2s}
+  .row:hover{color:var(--navy);padding-left:8px}
+  .row:hover .arrow{transform:translateX(4px)}
+  .row:focus-visible{outline:2px solid var(--navy);outline-offset:4px}
+  .row.done .num{color:var(--navy)}
+  .row.done .num::after{content:" ●";font-size:9px;vertical-align:2px}
+  @media (max-width:640px){
+    .row{grid-template-columns:44px 1fr 20px;gap:12px;padding:22px 0}
+    .row .q{grid-column:2 / 3}
+    .row .arrow{grid-row:1;grid-column:3}
+  }
+
+  /* topic page */
+  .back{all:unset;cursor:pointer;font-size:13px;font-weight:600;margin:72px 0 0;display:inline-block}
+  .back:hover{color:var(--navy)}
+  .topic-head{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;align-items:end;border-bottom:1px solid var(--line);padding:28px 0 22px;margin-top:20px;border-top:1px solid var(--line)}
+  .topic-num{grid-column:span 3;font-size:clamp(56px,9vw,120px);font-weight:700;letter-spacing:-.05em;line-height:.85;color:var(--navy);font-variant-numeric:tabular-nums}
+  .topic-ttl{grid-column:span 9;font-size:clamp(34px,5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1}
+  .topic-q,.hint{margin:0}
+  .topic-q{font-size:clamp(19px,2vw,24px);font-weight:600;letter-spacing:-.02em;line-height:1.5;margin:32px 0 12px;max-width:30em}
+  .hint{font-size:14px;line-height:1.7;color:var(--sub);max-width:42em;margin-bottom:40px}
+  @media (max-width:640px){.topic-head{grid-template-columns:1fr;gap:10px}.topic-num,.topic-ttl{grid-column:auto}}
+
+  .sheet{border-top:1px solid var(--line)}
+  .field-label{display:block;font-size:12px;font-weight:600;letter-spacing:.02em;padding:14px 0 6px}
+  .sheet textarea{width:100%;min-height:280px;border:0;border-bottom:1px solid var(--line);outline:none;resize:vertical;background:transparent;font:inherit;font-size:18px;line-height:1.75;color:var(--ink);padding:8px 0 24px}
+  .sheet textarea:focus{border-bottom-color:var(--navy);box-shadow:0 1px 0 var(--navy)}
+  .sheet textarea::placeholder{color:#b4b4ba}
+  .meta{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;margin:20px 0 0;font-size:14px}
+  .meta input[type=text]{border:0;border-bottom:1px solid var(--hair);background:transparent;font:inherit;padding:6px 0;width:220px;outline:none}
+  .meta input[type=text]:focus{border-bottom-color:var(--navy)}
+  .meta label{display:flex;align-items:center;gap:8px}
+  .meta input[type=checkbox]{accent-color:var(--navy);width:16px;height:16px;margin:0}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;margin:32px 0 0;align-items:center}
+  .btn{border:1px solid var(--ink);background:var(--ink);color:#fff;padding:14px 26px;font-size:14px;font-weight:600;border-radius:0;transition:background .15s,border-color .15s}
+  .btn:hover{background:var(--navy);border-color:var(--navy)}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:transparent;color:var(--navy);border-color:var(--navy)}
+  .btn:disabled{opacity:.35;cursor:default}
+  .status{font-size:13px;color:var(--sub);margin-left:8px}
+  .status.ok{color:var(--navy);font-weight:600}
+
+  /* others */
+  .others{margin:96px 0 0}
+  .others h3{display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.02em;margin:0;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:0 24px}
+  @media (max-width:900px){.notes{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.notes{grid-template-columns:1fr}}
+  .noteit{border-bottom:1px solid var(--hair);padding:20px 0 26px}
+  .noteit .who{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:10px}
+  .noteit .txt{font-size:15px;line-height:1.75;white-space:pre-wrap}
+  .locked{font-size:14px;line-height:1.7;color:var(--sub);padding:20px 0}
+  .empty{font-size:14px;color:var(--sub);padding:20px 0;margin:0}
+
+  footer{margin-top:120px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-size:12px;color:var(--sub);line-height:1.6}
+  footer b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar"><span>Thought Archive</span><span>생각 아카이빙</span></div>
+  <header>
+    <h1>당신의 생각을<br><em>빌려주세요.</em></h1>
+    <div class="cols">
+      <div class="label">About</div>
+      <div class="body">
+        <p class="intro">사람은 다른 사람을 완전히 이해할 수 없다고 생각합니다. 그래도 서로의 이야기를 듣고 생각을 나누는 것이 이해의 시작이라고 믿습니다.</p>
+        <p class="intro">여덟 개의 주제 중 마음 가는 것만 골라 적어주시면 됩니다. 하나만 적어도, 짧게 적어도 괜찮습니다.</p>
+        <p class="free"><b>정답이 있는 질문이 아닙니다.</b> 주제에서 조금 멀어져도 괜찮습니다. 예를 들어 ‘인간관계’라면 사람에 대한 생각, 관계에 대한 생각, 요즘 자꾸 떠오르는 한 사람에 대한 이야기, 무엇이든 좋습니다. 딱히 생각해 본 적이 없다면 “생각해 본 적 없다”고 적어주셔도 됩니다. 그것도 하나의 생각입니다.</p>
+        <p class="note">모인 글은 아카이빙북에 옮겨 실릴 수 있습니다. 이름은 적지 않으셔도 됩니다.</p>
+      </div>
+    </div>
+  </header>
+
+  <main id="view"></main>
+
+  <footer><b>Thought Archive</b><span>답은 주제마다 저장됩니다. 같은 기기와 브라우저로 다시 오시면 고칠 수 있습니다.</span></footer>
+</div>
+
+<script>
+// Supabase (공개용 키라서 코드에 있어도 괜찮아요. 데이터는 아래 두 함수로만 읽고 쓸 수 있어요.)
+const SB_URL = "https://jrgwtzzpvteusoksakne.supabase.co";
+const SB_KEY = "sb_publishable_SCcNr6rfS85j66-TLQRHHQ_C8WZIyVc";
+async function rpc(fn, args){
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/${fn}`, {
+    method: "POST",
+    headers: {"apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}`, "Content-Type": "application/json"},
+    body: JSON.stringify(args || {})
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+const TOPICS = [
+  {k:"t1", t:"디자인", q:"당신에게 디자인(또는 지금 하고 있는 일)은 어떤 의미인가요? 요즘 그것에 대해 드는 생각을 적어주세요.",
+   h:"디자인에 대한 생각, 일에 대한 생각, 좋아하는 것을 일로 삼는 것에 대한 생각, 무엇이든 괜찮습니다. 디자인과 상관없는 일을 하고 있다면 그 일에 대해 적어주셔도 됩니다."},
+  {k:"t2", t:"인간관계", q:"사람과의 관계에서 요즘 가장 많이 생각하는 것은 무엇인가요?",
+   h:"사람에 대한 생각, 관계에 대한 생각, 요즘 자주 떠오르는 누군가에 대한 이야기, 무엇이든 괜찮습니다. 별다른 생각이 없다면 없다고 적어주셔도 됩니다."},
+  {k:"t3", t:"음악, 또는 삶의 영감", q:"요즘 당신에게 영감을 주는 건 무엇인가요? 노래, 장면, 문장, 사람, 무엇이든 좋아요.",
+   h:"음악이 아니어도 됩니다. 자꾸 다시 찾게 되는 것, 좋아하는 것, ‘영감’이라는 말 자체에 대한 생각도 괜찮습니다. 딱히 없다면 없다고 적어주셔도 됩니다."},
+  {k:"t4", t:"좋은 사람", q:"당신이 생각하는 좋은 사람은 어떤 사람인가요?",
+   h:"되고 싶은 사람, 곁에 두고 싶은 사람, ‘좋은 사람’이라는 말에 대한 생각, 무엇이든 괜찮습니다."},
+  {k:"t5", t:"가족", q:"가족을 떠올리면 어떤 생각이 드나요?",
+   h:"고마운 마음, 서운한 마음, ‘가족’이라는 단어에 대한 생각, 무엇이든 괜찮습니다. 적고 싶지 않은 부분은 적지 않으셔도 됩니다."},
+  {k:"t6", t:"행복", q:"최근에 행복하다고 느낀 순간이 있나요? 당신에게 행복은 무엇인가요?",
+   h:"아주 사소한 순간이어도 좋고, 행복이 뭔지 잘 모르겠다는 생각이어도 괜찮습니다."},
+  {k:"t7", t:"동기", q:"당신은 왜 지금의 일을 하고 있나요? 무언가를 하게 만드는 이유에 대해 적어주세요.",
+   h:"무언가를 하는 이유, 혹은 하고 있는 일 그 자체에 대한 생각, 무엇이든 괜찮습니다. 이유 없이 그냥 하고 있다면 그렇다고 적어주셔도 됩니다."},
+  {k:"t8", t:"타인을 이해하는 일", q:"우리는 다른 사람을 정말로 이해할 수 있을까요? 누군가를 이해하려고 했던 순간이 있다면 적어주세요.",
+   h:"할 수 있다, 없다, 모르겠다, 어떤 답이든 괜찮습니다. 누군가에게 이해받았다고 느낀 순간에 대한 이야기도 좋습니다."},
+];
+
+const $ = (s, el=document) => el.querySelector(s);
+const view = $("#view");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// 브라우저마다 고정된 익명 ID (같은 사람이 다시 와서 고칠 수 있게)
+function makeId(){
+  if (crypto.randomUUID) return crypto.randomUUID();
+  const b = crypto.getRandomValues(new Uint8Array(16)); b[6] = (b[6] & 15) | 64; b[8] = (b[8] & 63) | 128;
+  const h = [...b].map(x => x.toString(16).padStart(2,"0")).join("");
+  return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
+}
+let store = {id: makeId(), name: "", consent: true, answers: {}, saved: {}};
+try { const d = JSON.parse(localStorage.getItem("ta") || "null"); if (d && d.id) store = Object.assign(store, d); } catch(e){}
+const persist = () => { try { localStorage.setItem("ta", JSON.stringify(store)); } catch(e){} };
+persist();
+
+let others = [];   // [{id,name,topic,text}]
+let topic = null, saving = false;
+
+function render(){ topic ? renderTopic(topic) : renderGrid(); }
+
+function renderGrid(){
+  view.innerHTML = `<div class="sec-label"><span>Topics</span><span>08</span></div>
+    <ol class="list">${TOPICS.map((t,i)=>`
+    <li><button class="row ${store.saved[t.k] ? "done":""}" data-topic="${t.k}">
+      <span class="num">${String(i+1).padStart(2,"0")}</span>
+      <span class="ttl">${esc(t.t)}</span>
+      <span class="q">${esc(t.q)}</span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </button></li>`).join("")}</ol>`;
+  view.querySelectorAll(".row").forEach(c => c.onclick = () => { topic = c.dataset.topic; render(); scrollTo(0,0); });
+}
+
+function renderTopic(k){
+  const i = TOPICS.findIndex(t => t.k === k), t = TOPICS[i];
+  view.innerHTML = `
+    <button class="back" id="back">← 주제 목록</button>
+    <div class="topic-head">
+      <div class="topic-num">${String(i+1).padStart(2,"0")}</div>
+      <div class="topic-ttl">${esc(t.t)}</div>
+    </div>
+    <p class="topic-q">${esc(t.q)}</p>
+    <p class="hint">${esc(t.h)}</p>
+    <div class="sheet"><label class="field-label" for="ans">Your thought</label><textarea id="ans" maxlength="4000" placeholder="떠오르는 대로 적어주세요">${esc(store.answers[k] || "")}</textarea></div>
+    <div class="meta">
+      <input type="text" id="name" placeholder="이름 또는 별명 (선택)" value="${esc(store.name)}" maxlength="20">
+      <label><input type="checkbox" id="consent" ${store.consent ? "checked":""}> 책에 실려도 괜찮아요</label>
+    </div>
+    <div class="actions">
+      <button class="btn" id="save">${store.saved[k] ? "고쳐서 저장하기" : "저장하기"}</button>
+      ${i < 7 ? `<button class="btn ghost" id="next">다음 주제 →</button>` : ""}
+      <span class="status" id="st"></span>
+    </div>
+    <section class="others" id="others"></section>`;
+  const ta = $("#ans");
+  ta.oninput = () => { store.answers[k] = ta.value; persist(); };
+  $("#name").oninput = e => { store.name = e.target.value; persist(); };
+  $("#consent").onchange = e => { store.consent = e.target.checked; persist(); };
+  $("#back").onclick = () => { topic = null; render(); };
+  if ($("#next")) $("#next").onclick = () => { topic = TOPICS[i+1].k; render(); scrollTo(0,0); };
+  $("#save").onclick = () => save(k);
+  renderOthers(k);
+}
+
+function renderOthers(k){
+  const box = $("#others"); if (!box) return;
+  if (!store.saved[k]) { box.innerHTML = `<h3><span>다른 사람들의 생각</span><span>—</span></h3><div class="locked">먼저 내 생각을 적고 저장하시면, 같은 주제에 대한 다른 사람들의 생각을 볼 수 있습니다.</div>`; return; }
+  const mineIds = Object.values(store.saved);
+  const list = others.filter(o => o.topic === k && !mineIds.includes(o.id) && String(o.body).trim());
+  box.innerHTML = `<h3><span>다른 사람들의 생각</span><span>${String(list.length).padStart(2,"0")}</span></h3>` + (list.length
+    ? `<div class="notes">${list.map(o => `<div class="noteit"><div class="who">${esc(String(o.name||"").trim() || "누군가")}의 생각</div><div class="txt">${esc(String(o.body).trim())}</div></div>`).join("")}</div>`
+    : `<p class="empty">아직 다른 사람의 생각이 없습니다. 첫 번째로 적어주셨습니다.</p>`);
+}
+
+async function save(k){
+  if (saving) return;
+  const st = $("#st"), btn = $("#save"), text = (store.answers[k] || "").trim();
+  if (!text) { st.textContent = "먼저 생각을 적어주세요."; return; }
+  saving = true; btn.disabled = true; st.className = "status"; st.textContent = "저장 중…";
+  try {
+    const rowId = await rpc("save_thought", {
+      p_author: store.id, p_name: store.name.trim().slice(0,20), p_consent: store.consent, p_topic: k, p_body: text.slice(0,4000)
+    });
+    store.saved[k] = rowId; persist();
+    st.className = "status ok"; st.textContent = "저장했습니다. 고맙습니다.";
+    btn.textContent = "고쳐서 저장하기";
+    await loadOthers();
+    renderOthers(k);
+  } catch(e) {
+    st.textContent = "저장하지 못했습니다. 잠시 후 다시 눌러주세요.";
+  }
+  saving = false; btn.disabled = false;
+}
+
+async function loadOthers(){
+  try { const rows = await rpc("list_thoughts"); if (Array.isArray(rows)) others = rows; } catch(e){}
+}
+
+render();
+loadOthers().then(() => { if (topic) renderOthers(topic); });
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>생각 아카이빙</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
