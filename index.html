@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>생각 아카이빙 — Thought Archive</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Nanum+Gothic+Coding&family=Nanum+Pen+Script&display=swap">
 <style>
   :root{
     --ink:#0a0a0a; --sub:#6e6e73; --line:#0a0a0a; --hair:#d9d9de; --bg:#ffffff;
@@ -31,12 +32,12 @@
   .intro{font-size:17px;line-height:1.65;font-weight:500;letter-spacing:-.01em;margin:0}
   .free{grid-column:span 2;font-size:15px;line-height:1.75;margin:8px 0 0;padding:18px 0 0;border-top:1px solid var(--hair);color:#2a2a2e}
   .free b{color:var(--navy);font-weight:700}
-  .note{grid-column:span 2;font-size:12px;color:var(--sub);line-height:1.6;margin:0}
+  .small{grid-column:span 2;font-size:12px;color:var(--sub);line-height:1.6;margin:0}
   @media (max-width:760px){
     .cols{grid-template-columns:1fr;gap:12px}
     .cols .label,.cols .body{grid-column:auto}
     .cols .body{grid-template-columns:1fr;gap:16px}
-    .free,.note{grid-column:auto}
+    .free,.small{grid-column:auto}
   }
 
   /* topic list */
@@ -70,11 +71,6 @@
   .hint{font-size:14px;line-height:1.7;color:var(--sub);max-width:42em;margin-bottom:40px}
   @media (max-width:640px){.topic-head{grid-template-columns:1fr;gap:10px}.topic-num,.topic-ttl{grid-column:auto}}
 
-  .sheet{border-top:1px solid var(--line)}
-  .field-label{display:block;font-size:12px;font-weight:600;letter-spacing:.02em;padding:14px 0 6px}
-  .sheet textarea{width:100%;min-height:280px;border:0;border-bottom:1px solid var(--line);outline:none;resize:vertical;background:transparent;font:inherit;font-size:18px;line-height:1.75;color:var(--ink);padding:8px 0 24px}
-  .sheet textarea:focus{border-bottom-color:var(--navy);box-shadow:0 1px 0 var(--navy)}
-  .sheet textarea::placeholder{color:#b4b4ba}
   .meta{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;margin:20px 0 0;font-size:14px}
   .meta input[type=text]{border:0;border-bottom:1px solid var(--hair);background:transparent;font:inherit;padding:6px 0;width:220px;outline:none}
   .meta input[type=text]:focus{border-bottom-color:var(--navy)}
@@ -89,17 +85,74 @@
   .status{font-size:13px;color:var(--sub);margin-left:8px}
   .status.ok{color:var(--navy);font-weight:600}
 
-  /* others */
+  /* ───── memo (paper, type) ───── */
+  .note[data-color="c1"]{--paper:#f3ebcb}.note[data-color="c2"]{--paper:#f1dccf}
+  .note[data-color="c3"]{--paper:#eed8dd}.note[data-color="c4"]{--paper:#ded8ec}
+  .note[data-color="c5"]{--paper:#d6e3ee}.note[data-color="c6"]{--paper:#d7e8de}
+  .note[data-color="c7"]{--paper:#e0e5d3}.note[data-color="c8"]{--paper:#e7e6e3}
+  .note{--paper:#f3ebcb;--ink2:#26262b;--fs:15px;--lh:1.75;--ff:var(--font);
+    position:relative;background-color:var(--paper);color:var(--ink2);font-family:var(--ff);font-size:var(--fs);line-height:var(--lh);
+    padding:28px 20px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 10px 18px -12px rgba(0,0,0,.28);transition:background-color .35s var(--ease,ease),transform .35s var(--ease,ease)}
+  .note[data-paper="line"]{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--fs)*var(--lh) - 1px),rgba(30,30,40,.10) calc(var(--fs)*var(--lh) - 1px),rgba(30,30,40,.10) calc(var(--fs)*var(--lh)));background-position:0 27px}
+  .note[data-paper="grid"]{background-image:linear-gradient(rgba(30,30,40,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(30,30,40,.07) 1px,transparent 1px);background-size:16px 16px}
+  .note[data-paper="dot"]{background-image:radial-gradient(rgba(30,30,40,.18) 1px,transparent 1.3px);background-size:15px 15px}
+  .note[data-font="serif"]{--ff:"Gowun Batang",serif}
+  .note[data-font="hand"]{--ff:"Nanum Pen Script",cursive;--fs:23px;--lh:1.3}
+  .note[data-font="round"]{--ff:"Gowun Dodum",sans-serif}
+  .note[data-font="mono"]{--ff:"Nanum Gothic Coding",monospace;--fs:14px}
+  .note .tape{position:absolute;top:-10px;left:var(--tleft,50%);width:68px;height:22px;transform:translateX(-50%) rotate(var(--trot,-2deg));
+    background:rgba(255,255,255,.55);box-shadow:0 1px 2px rgba(0,0,0,.06);backdrop-filter:blur(1px)}
+  .note .txt{white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere}
+  .note .who{font-family:var(--font);font-size:12px;margin-top:14px;opacity:.6}
+  .note .tag{font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.02em;opacity:.55;margin-bottom:8px}
+
+  /* composer: memo + tools */
+  .composer{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:40px;align-items:start;padding-top:22px;border-top:1px solid var(--line)}
+  @media (max-width:760px){.composer{grid-template-columns:1fr;gap:28px}}
+  .memo.editor{min-height:340px;display:flex;flex-direction:column;transform:rotate(-.6deg)}
+  .memo.editor textarea{flex:1;min-height:260px;width:100%;border:0;outline:none;resize:vertical;background:transparent;color:inherit;
+    font:inherit;font-size:var(--fs);line-height:var(--lh);padding:0}
+  .memo.editor textarea::placeholder{color:rgba(38,38,43,.38)}
+  .memo.editor:focus-within{box-shadow:0 0 0 2px var(--navy),0 14px 22px -14px rgba(0,0,0,.35)}
+  .memo.pop{animation:pop .35s var(--ease-out,ease)}
+  @keyframes pop{0%{transform:rotate(-.6deg) scale(1)}40%{transform:rotate(.4deg) scale(1.015)}100%{transform:rotate(-.6deg) scale(1)}}
+  .tools{display:grid;gap:26px}
+  .tl{font-size:12px;font-weight:600;letter-spacing:.02em;padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid var(--hair)}
+  .swatches{display:grid;grid-template-columns:repeat(8,minmax(0,34px));gap:10px}
+  .sw{all:unset;cursor:pointer;aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);transition:transform .2s var(--ease,ease)}
+  .sw[data-color="c1"]{background:#f3ebcb}.sw[data-color="c2"]{background:#f1dccf}.sw[data-color="c3"]{background:#eed8dd}.sw[data-color="c4"]{background:#ded8ec}
+  .sw[data-color="c5"]{background:#d6e3ee}.sw[data-color="c6"]{background:#d7e8de}.sw[data-color="c7"]{background:#e0e5d3}.sw[data-color="c8"]{background:#e7e6e3}
+  .sw:hover{transform:scale(1.1)}
+  .sw[aria-pressed="true"]{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+  .sw:focus-visible{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--navy)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:8px 12px;border:1px solid var(--hair);transition:border-color .2s,background .2s,color .2s}
+  .chip:hover{border-color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .chip:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+  .pp{width:16px;height:16px;border:1px solid currentColor;opacity:.75;background-size:5px 5px}
+  .pp[data-paper="line"]{background-image:repeating-linear-gradient(to bottom,transparent 0 4px,currentColor 4px 5px)}
+  .pp[data-paper="grid"]{background-image:linear-gradient(currentColor 1px,transparent 1px),linear-gradient(90deg,currentColor 1px,transparent 1px)}
+  .pp[data-paper="dot"]{background-image:radial-gradient(currentColor 1px,transparent 1.2px)}
+  .fp{font-size:17px;line-height:1}
+  .fp[data-font="serif"]{font-family:"Gowun Batang",serif}.fp[data-font="hand"]{font-family:"Nanum Pen Script",cursive;font-size:22px}
+  .fp[data-font="round"]{font-family:"Gowun Dodum",sans-serif}.fp[data-font="mono"]{font-family:"Nanum Gothic Coding",monospace}
+
+  /* boards */
   .others{margin:96px 0 0}
-  .others h3{display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.02em;margin:0;padding-bottom:14px;border-bottom:1px solid var(--line)}
-  .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:0 24px}
-  @media (max-width:900px){.notes{grid-template-columns:repeat(2,1fr)}}
-  @media (max-width:560px){.notes{grid-template-columns:1fr}}
-  .noteit{border-bottom:1px solid var(--hair);padding:20px 0 26px}
-  .noteit .who{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:10px}
-  .noteit .txt{font-size:15px;line-height:1.75;white-space:pre-wrap}
-  .locked{font-size:14px;line-height:1.7;color:var(--sub);padding:20px 0}
-  .empty{font-size:14px;color:var(--sub);padding:20px 0;margin:0}
+  .wall{margin:120px 0 0}
+  .board-head{display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.02em;margin:0 0 36px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .board{columns:4 210px;column-gap:22px}
+  .board .note{break-inside:avoid;display:inline-block;width:100%;margin:0 0 30px;transform:rotate(var(--rot,0deg));
+    animation:drop .6s var(--ease-out,ease) backwards}
+  .board .note:hover{transform:rotate(0deg) translateY(-3px) scale(1.02);z-index:2}
+  @keyframes drop{from{opacity:0;transform:translateY(-14px) rotate(calc(var(--rot,0deg)*3))}}
+  .board-wrap{position:relative}
+  .board-wrap.locked .board{filter:blur(6px);pointer-events:none;user-select:none;max-height:520px;overflow:hidden}
+  .lock{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .lock p{margin:0;background:var(--ink);color:#fff;padding:18px 26px;font-size:14px;line-height:1.7}
+  .locked-msg{font-size:14px;line-height:1.7;color:var(--sub)}
+  .empty{font-size:14px;color:var(--sub);margin:0}
 
   footer{margin-top:120px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-size:12px;color:var(--sub);line-height:1.6}
   footer b{color:var(--ink);font-weight:600}
@@ -151,8 +204,8 @@
   /* topic page entrance */
   .enter .topic-num,.enter .topic-ttl{display:inline-block;transform:translateY(40px);opacity:0;animation:up .8s var(--ease-out) forwards}
   .enter .topic-ttl{animation-delay:.08s}
-  .enter .topic-q,.enter .hint,.enter .sheet,.enter .meta,.enter .actions{opacity:0;transform:translateY(16px);animation:up .7s var(--ease-out) forwards}
-  .enter .topic-q{animation-delay:.16s}.enter .hint{animation-delay:.22s}.enter .sheet{animation-delay:.28s}.enter .meta,.enter .actions{animation-delay:.34s}
+  .enter .topic-q,.enter .hint,.enter .composer,.enter .meta,.enter .actions{opacity:0;transform:translateY(16px);animation:up .7s var(--ease-out) forwards}
+  .enter .topic-q{animation-delay:.16s}.enter .hint{animation-delay:.22s}.enter .composer{animation-delay:.28s}.enter .meta,.enter .actions{animation-delay:.34s}
   @keyframes up{to{transform:none;opacity:1}}
   .topic-head{position:relative;border-top-color:transparent}
   .topic-head::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--line);transform:scaleX(0);transform-origin:left;animation:draw .9s var(--ease) forwards}
@@ -162,7 +215,6 @@
   .btn:hover{background:var(--ink)}
   .btn.ghost::before{background:var(--ink)}
   .btn.ghost:hover{color:#fff;border-color:var(--ink)}
-  .noteit{opacity:0;transform:translateY(16px);animation:up .6s var(--ease-out) forwards}
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
@@ -182,7 +234,7 @@
         <p class="intro">사람은 다른 사람을 완전히 이해할 수 없다고 생각합니다. 그래도 서로의 이야기를 듣고 생각을 나누는 것이 이해의 시작이라고 믿습니다.</p>
         <p class="intro">여덟 개의 주제 중 마음 가는 것만 골라 적어주시면 됩니다. 하나만 적어도, 짧게 적어도 괜찮습니다.</p>
         <p class="free"><b>정답이 있는 질문이 아닙니다.</b> 주제에서 조금 멀어져도 괜찮습니다. 예를 들어 ‘인간관계’라면 사람에 대한 생각, 관계에 대한 생각, 요즘 자꾸 떠오르는 한 사람에 대한 이야기, 무엇이든 좋습니다. 딱히 생각해 본 적이 없다면 “생각해 본 적 없다”고 적어주셔도 됩니다. 그것도 하나의 생각입니다.</p>
-        <p class="note">모인 글은 아카이빙북에 옮겨 실릴 수 있습니다. 이름은 적지 않으셔도 됩니다.</p>
+        <p class="small">모인 글은 아카이빙북에 옮겨 실릴 수 있습니다. 이름은 적지 않으셔도 됩니다.</p>
       </div>
     </div>
   </header>
@@ -224,6 +276,16 @@ const TOPICS = [
   {k:"t8", t:"타인을 이해하는 일", q:"우리는 다른 사람을 정말로 이해할 수 있을까요? 누군가를 이해하려고 했던 순간이 있다면 적어주세요.",
    h:"할 수 있다, 없다, 모르겠다, 어떤 답이든 괜찮습니다. 누군가에게 이해받았다고 느낀 순간에 대한 이야기도 좋습니다."},
 ];
+const TOPIC_NAME = Object.fromEntries(TOPICS.map(t => [t.k, t.t]));
+
+// 메모 꾸미기 선택지 (종이 색 · 종이 · 글씨)
+const COLORS = [
+  {k:"c1", n:"버터"}, {k:"c2", n:"피치"}, {k:"c3", n:"로즈"}, {k:"c4", n:"라일락"},
+  {k:"c5", n:"하늘"}, {k:"c6", n:"민트"}, {k:"c7", n:"세이지"}, {k:"c8", n:"구름"},
+];
+const PAPERS = [{k:"plain", n:"무지"}, {k:"line", n:"줄"}, {k:"grid", n:"모눈"}, {k:"dot", n:"점"}];
+const FONTS = [{k:"sans", n:"고딕"}, {k:"serif", n:"명조"}, {k:"hand", n:"손글씨"}, {k:"round", n:"동글"}, {k:"mono", n:"타자기"}];
+const pick = (list, v, d) => list.some(x => x.k === v) ? v : d;
 
 const $ = (s, el=document) => el.querySelector(s);
 const view = $("#view");
@@ -236,13 +298,22 @@ function makeId(){
   const h = [...b].map(x => x.toString(16).padStart(2,"0")).join("");
   return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
 }
-let store = {id: makeId(), name: "", consent: true, answers: {}, saved: {}};
+let store = {id: makeId(), name: "", consent: true, answers: {}, saved: {}, style: {}};
 try { const d = JSON.parse(localStorage.getItem("ta") || "null"); if (d && d.id) store = Object.assign(store, d); } catch(e){}
+store.style = store.style || {};
 const persist = () => { try { localStorage.setItem("ta", JSON.stringify(store)); } catch(e){} };
 persist();
 
-let others = [];   // [{id,name,topic,text}]
-let topic = null, saving = false;
+// 처음 쓰는 주제는 종이 색을 하나 골라서 시작
+function styleFor(k){
+  if (!store.style[k]) store.style[k] = {color: COLORS[Math.floor(Math.random()*COLORS.length)].k, paper: "plain", font: "sans"};
+  const s = store.style[k];
+  return {color: pick(COLORS, s.color, "c1"), paper: pick(PAPERS, s.paper, "plain"), font: pick(FONTS, s.font, "sans")};
+}
+
+let others = [];   // [{id,name,topic,body,color,paper,font,created_at}]
+let topic = null, saving = false, loaded = false;
+const mineIds = () => Object.values(store.saved);
 
 function render(){ document.querySelector("header").hidden = !!topic; topic ? renderTopic(topic) : renderGrid(); }
 
@@ -275,6 +346,21 @@ function watchRows(){
   items.forEach(li => { seenObs.observe(li); focusObs.observe(li); });
 }
 
+// ── 메모 한 장 ──
+function hash(s){ let x = 0; for (const c of String(s)) x = (x * 31 + c.charCodeAt(0)) | 0; return Math.abs(x); }
+function noteHTML(o, i, withTopic){
+  const hv = hash(o.id), mine = mineIds().includes(o.id);
+  const rot = ((hv % 7) - 3) * 0.6, trot = ((hv >> 3) % 9) - 4, tleft = 30 + ((hv >> 6) % 40);
+  const who = mine ? "나의 생각" : `${String(o.name || "").trim() || "누군가"}의 생각`;
+  return `<article class="note" data-color="${pick(COLORS, o.color, "c1")}" data-paper="${pick(PAPERS, o.paper, "plain")}" data-font="${pick(FONTS, o.font, "sans")}"
+    style="--rot:${rot}deg;--trot:${trot}deg;--tleft:${tleft}%;animation-delay:${Math.min(i, 12) * 45}ms">
+    <span class="tape" aria-hidden="true"></span>
+    ${withTopic ? `<div class="tag">${esc(TOPIC_NAME[o.topic] || "")}</div>` : ""}
+    <div class="txt">${esc(String(o.body).trim())}</div>
+    <div class="who">— ${esc(who)}</div>
+  </article>`;
+}
+
 function renderGrid(){
   view.classList.remove("enter");
   view.innerHTML = `<div class="sec-label"><span>Topics</span><span>08</span></div>
@@ -284,13 +370,30 @@ function renderGrid(){
       <span class="ttl">${esc(t.t)}</span>
       <span class="q">${esc(t.q)}</span>
       <span class="arrow" aria-hidden="true">→</span>
-    </button></li>`).join("")}</ol>`;
+    </button></li>`).join("")}</ol>
+    <section class="wall" id="wall"></section>`;
   view.querySelectorAll(".row").forEach(c => c.onclick = () => go(c.dataset.topic));
   watchRows();
+  renderWall();
+}
+
+// 홈: 모두의 생각 보드 (하나라도 적으면 열림)
+function renderWall(){
+  const box = $("#wall"); if (!box) return;
+  const all = others.filter(o => String(o.body).trim()).slice().reverse().slice(0, 80);
+  const open = mineIds().length > 0;
+  box.innerHTML = `<h3 class="board-head"><span>모두의 생각</span><span>${String(all.length).padStart(2,"0")}</span></h3>` +
+    (!loaded ? `<p class="empty">불러오는 중…</p>` :
+     !all.length ? `<p class="empty">아직 쌓인 생각이 없습니다. 첫 메모를 남겨주세요.</p>` :
+     `<div class="board-wrap ${open ? "" : "locked"}">
+        <div class="board">${all.map((o,i) => noteHTML(o, i, true)).join("")}</div>
+        ${open ? "" : `<div class="lock"><p><b>하나라도 적고 저장하시면</b><br>모두의 생각이 열립니다.</p></div>`}
+      </div>`);
 }
 
 function renderTopic(k){
   const i = TOPICS.findIndex(t => t.k === k), t = TOPICS[i];
+  const st = styleFor(k);
   view.classList.add("enter");
   view.innerHTML = `
     <button class="back" id="back">← 주제 목록</button>
@@ -300,7 +403,21 @@ function renderTopic(k){
     </div>
     <p class="topic-q">${esc(t.q)}</p>
     <p class="hint">${esc(t.h)}</p>
-    <div class="sheet"><label class="field-label" for="ans">Your thought</label><textarea id="ans" maxlength="4000" placeholder="떠오르는 대로 적어주세요">${esc(store.answers[k] || "")}</textarea></div>
+    <div class="composer">
+      <div class="memo note editor" id="memo" data-color="${st.color}" data-paper="${st.paper}" data-font="${st.font}">
+        <span class="tape" aria-hidden="true"></span>
+        <textarea id="ans" maxlength="4000" placeholder="떠오르는 대로 적어주세요" aria-label="나의 생각">${esc(store.answers[k] || "")}</textarea>
+        <div class="who">— <span id="sig">${esc(store.name.trim() || "이름 없음")}</span></div>
+      </div>
+      <div class="tools">
+        <div class="tool"><div class="tl">종이 색</div>
+          <div class="swatches">${COLORS.map(c => `<button class="sw" data-color="${c.k}" aria-label="${c.n}" title="${c.n}" aria-pressed="${c.k===st.color}"></button>`).join("")}</div></div>
+        <div class="tool"><div class="tl">종이</div>
+          <div class="chips">${PAPERS.map(p => `<button class="chip paper-chip" data-paper="${p.k}" aria-pressed="${p.k===st.paper}"><span class="pp" data-paper="${p.k}"></span>${p.n}</button>`).join("")}</div></div>
+        <div class="tool"><div class="tl">글씨</div>
+          <div class="chips">${FONTS.map(f => `<button class="chip font-chip" data-font="${f.k}" aria-pressed="${f.k===st.font}"><span class="fp" data-font="${f.k}">가</span>${f.n}</button>`).join("")}</div></div>
+      </div>
+    </div>
     <div class="meta">
       <input type="text" id="name" placeholder="이름 또는 별명 (선택)" value="${esc(store.name)}" maxlength="20">
       <label><input type="checkbox" id="consent" ${store.consent ? "checked":""}> 책에 실려도 괜찮아요</label>
@@ -311,10 +428,19 @@ function renderTopic(k){
       <span class="status" id="st"></span>
     </div>
     <section class="others" id="others"></section>`;
-  const ta = $("#ans");
+  const ta = $("#ans"), memo = $("#memo");
   ta.oninput = () => { store.answers[k] = ta.value; persist(); };
-  $("#name").oninput = e => { store.name = e.target.value; persist(); };
+  $("#name").oninput = e => { store.name = e.target.value; $("#sig").textContent = e.target.value.trim() || "이름 없음"; persist(); };
   $("#consent").onchange = e => { store.consent = e.target.checked; persist(); };
+  const setStyle = (key, val, sel) => {
+    store.style[k] = Object.assign(styleFor(k), {[key]: val}); persist();
+    memo.dataset[key] = val;
+    view.querySelectorAll(sel).forEach(b => b.setAttribute("aria-pressed", b.dataset[key] === val));
+    memo.classList.remove("pop"); void memo.offsetWidth; memo.classList.add("pop");
+  };
+  view.querySelectorAll(".sw").forEach(b => b.onclick = () => setStyle("color", b.dataset.color, ".sw"));
+  view.querySelectorAll(".paper-chip").forEach(b => b.onclick = () => setStyle("paper", b.dataset.paper, ".paper-chip"));
+  view.querySelectorAll(".font-chip").forEach(b => b.onclick = () => setStyle("font", b.dataset.font, ".font-chip"));
   $("#back").onclick = () => go(null);
   if ($("#next")) $("#next").onclick = () => go(TOPICS[i+1].k);
   $("#save").onclick = () => save(k);
@@ -323,28 +449,31 @@ function renderTopic(k){
 
 function renderOthers(k){
   const box = $("#others"); if (!box) return;
-  if (!store.saved[k]) { box.innerHTML = `<h3><span>다른 사람들의 생각</span><span>—</span></h3><div class="locked">먼저 내 생각을 적고 저장하시면, 같은 주제에 대한 다른 사람들의 생각을 볼 수 있습니다.</div>`; return; }
-  const mineIds = Object.values(store.saved);
-  const list = others.filter(o => o.topic === k && !mineIds.includes(o.id) && String(o.body).trim());
-  box.innerHTML = `<h3><span>다른 사람들의 생각</span><span>${String(list.length).padStart(2,"0")}</span></h3>` + (list.length
-    ? `<div class="notes">${list.map(o => `<div class="noteit"><div class="who">${esc(String(o.name||"").trim() || "누군가")}의 생각</div><div class="txt">${esc(String(o.body).trim())}</div></div>`).join("")}</div>`
-    : `<p class="empty">아직 다른 사람의 생각이 없습니다. 첫 번째로 적어주셨습니다.</p>`);
+  if (!store.saved[k]) { box.innerHTML = `<h3 class="board-head"><span>이 주제에 쌓인 생각</span><span>—</span></h3><div class="locked-msg">먼저 내 생각을 적고 저장하시면, 같은 주제에 대한 다른 사람들의 생각을 볼 수 있습니다.</div>`; return; }
+  const list = others.filter(o => o.topic === k && String(o.body).trim()).slice().reverse();
+  const n = list.filter(o => !mineIds().includes(o.id)).length;
+  box.innerHTML = `<h3 class="board-head"><span>이 주제에 쌓인 생각</span><span>${String(list.length).padStart(2,"0")}</span></h3>` +
+    `<div class="board">${list.map((o,i) => noteHTML(o, i, false)).join("")}</div>` +
+    (n ? "" : `<p class="empty">아직 다른 사람의 생각이 없습니다. 첫 번째로 적어주셨습니다.</p>`);
 }
 
 async function save(k){
   if (saving) return;
   const st = $("#st"), btn = $("#save"), text = (store.answers[k] || "").trim();
   if (!text) { st.textContent = "먼저 생각을 적어주세요."; return; }
+  const s = styleFor(k);
   saving = true; btn.disabled = true; st.className = "status"; st.textContent = "저장 중…";
   try {
     const rowId = await rpc("save_thought", {
-      p_author: store.id, p_name: store.name.trim().slice(0,20), p_consent: store.consent, p_topic: k, p_body: text.slice(0,4000)
+      p_author: store.id, p_name: store.name.trim().slice(0,20), p_consent: store.consent, p_topic: k, p_body: text.slice(0,4000),
+      p_color: s.color, p_paper: s.paper, p_font: s.font
     });
     store.saved[k] = rowId; persist();
     st.className = "status ok"; st.textContent = "저장했습니다. 고맙습니다.";
     btn.textContent = "고쳐서 저장하기";
     await loadOthers();
     renderOthers(k);
+    $("#others").scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "start"});
   } catch(e) {
     st.textContent = "저장하지 못했습니다. 잠시 후 다시 눌러주세요.";
   }
@@ -353,10 +482,11 @@ async function save(k){
 
 async function loadOthers(){
   try { const rows = await rpc("list_thoughts"); if (Array.isArray(rows)) others = rows; } catch(e){}
+  loaded = true;
 }
 
 render();
-loadOthers().then(() => { if (topic) renderOthers(topic); });
+loadOthers().then(() => { topic ? renderOthers(topic) : renderWall(); });
 </script>
 </body>
 </html>
